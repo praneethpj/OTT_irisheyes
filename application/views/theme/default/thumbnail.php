@@ -50,8 +50,9 @@
 			<div id="p-header">
 				<a class="p-close-button topRight"><i class="fa fa-xmark"></i></a>
 
-				<video src="<?php echo base_url($assets_dir); ?>video/home-bg-hq.mp4" loop="true" autoplay="autoplay" muted="">
-				
+				<video src="https://irisheyestemp.xyz/video/home-bg-hq.mp4" id="vid-sample" loop="true" autoplay="autoplay" muted="" style="display: inline;">
+					<source src="https://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' />
+					<source src="https://vjs.zencdn.net/v/oceans.webm" type='video/webm' />
 				</video>
 
 				<div id="p-buttons">
