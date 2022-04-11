@@ -17,7 +17,7 @@
         <?php if($videos['is_paid'] == '1'):?>
           <div class="ribbon ribbon-top-right"></div>
         <?php endif; ?>        
-        <a class="slider-show ico-play ico-play-sm" id="<?php echo $videos['videos_id']; ?>" >
+        <a class="slider-show-<?php echo $videos['videos_id']; ?> ico-play ico-play-sm" id="<?php echo $videos['videos_id']; ?>" >
             <img class="img-responsive play-svg svg" src="<?php echo base_url($assets_dir); ?>images/play-button.svg" alt="play" onerror="this.src='<?php echo base_url($assets_dir); ?>images/play-button.png'">
         </a>
         <div class="overlay-div"></div>
@@ -44,15 +44,14 @@
 <input type="hidden" name="main_video" id="main_video_<?php echo $videos['videos_id']; ?>" value="<?php echo $file_url.'&mute=1'; ?>">
 
 <!-- pop up -->
-<div id="p-cont-bg" class="videoPlay">
+<div id="p-cont-bg" class="videoPlay-<?php echo $videos['videos_id']; ?>">
 	<div id="p-cont">
 		<header class="op-down">
 			<div id="p-header">
 				<a class="p-close-button topRight"><i class="fa fa-xmark"></i></a>
 
-				<video src="https://irisheyestemp.xyz/video/home-bg-hq.mp4" id="vid-sample" loop="true" autoplay="autoplay" muted="" style="display: inline;">
-					<source src="https://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' />
-					<source src="https://vjs.zencdn.net/v/oceans.webm" type='video/webm' />
+				<video src="<?php echo base_url($assets_dir); ?>video/home-bg-hq.mp4" loop="true" autoplay="autoplay" muted="">
+				
 				</video>
 
 				<div id="p-buttons">
@@ -74,41 +73,63 @@
 					<dl>
 						<dt>Year of release</dt>
 						<dd><?php echo $videos['release'];?></dd>
-						<dt>Age recommended</dt>
-						<dd>15</dd>
 						<dt>Duration</dt>
-						<dd>1h28min</dd>
+						<dd><?php echo $videos['runtime'];?></dd>
 						<dt>Quality</dt>
-						<dd>HD</dd>
-						<dt>Accessibility</dt>
-						<dd>AD, subtitles</dd>
+						<dd><?php echo $videos['video_quality'];?></dd>
+						
 					</dl>
 				</div>
 				<div id="p-prod-info">
 					<dl>
 						<dt>Genre</dt>
-						<dd>Drama</dd>
+						<dd>
+						<?php if($videos['genre'] !='' && $videos['genre'] !=NULL):
+								$i = 0;
+								$genre =explode(',', $videos['genre']);                                                
+									foreach ($genre as $genre_id):
+									if($i>0){ echo ',';} $i++;                                           ?>
+									<a style="font-size:12px" href="<?php echo $this->genre_model->get_genre_url_by_id($genre_id);?>"><?php echo $this->genre_model->get_genre_name_by_id($genre_id);?></a>
+							<?php endforeach; endif;?>
+						</dd>
 						<dt>Actors</dt>
-						<dd>Antonio Banderas Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta ullam dicta perferendis animi, illo consectetur cum recusandae mollitia exercitationem, excepturi rem deleniti, dignissimos beatae ea vitae molestias, nihil. Id, nulla.</dd>
+						<dd>
+						<?php if($videos['stars'] !='' && $videos['stars'] !=NULL):
+								$i = 0;
+								$stars =explode(',', $videos['stars']);                                                
+									foreach ($stars as $star_id):
+									if($i>0){ echo ',';} $i++;                                           ?>
+									<a style="font-size:12px" href="<?php echo base_url().'star/'.$this->common_model->get_star_slug_by_id($star_id);?>"><?php echo $this->common_model->get_star_name_by_id($star_id);?></a>
+							<?php endforeach; endif;?>
+						</dd>
 						<dt>Director</dt>
-						<dd>Spielberg</dd>
+						<dd>
+							<?php if($videos['director'] !='' && $videos['director'] !=NULL):
+								$i = 0;
+								$stars =explode(',', $videos['director']);                                                
+									foreach ($stars as $star_id):
+									if($i>0){ echo ',';} $i++;                                           ?>
+									<a style="font-size:12px" href="<?php echo base_url().'star/'.$this->common_model->get_star_slug_by_id($star_id);?>"><?php echo $this->common_model->get_star_name_by_id($star_id);?></a>
+							<?php endforeach; endif;?>
+						</dd>
 						<dt>Keywords</dt>
-						<dd>Gore</dd>
-						<dt>Contains</dt>
-						<dd>Violence</dd>
+						<dd><a style="font-size:12px">
+							<?php echo $videos['focus_keyword'];?></a>
+						</dd>
+						
 					</dl>
 				</div>
 			</div>
 
-			<div id="p-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut, neque exercitationem. Odio ut, quo accusantium hic possimus suscipit necessitatibus modi voluptatum culpa, dolorum officiis quibusdam quia velit ipsum, numquam nobis? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita voluptates, asperiores, beatae quaerat tempora saepe tempore consectetur aut. In ipsa eveniet ea, quod incidunt earum eum porro recusandae saepe nostrum?</div>
+			<div id="p-description"><?php echo $videos['description'];?></div>
 		</main>
 	</div>
 </div>
                 
 
 <script type="text/javascript">
-	$(".slider-show").click(function(){
-		$(".videoPlay").toggleClass("show");
+	$(".slider-show-<?php echo $videos['videos_id']; ?>").click(function(){
+		$(".videoPlay-<?php echo $videos['videos_id']; ?>").toggleClass("show");
 		
 		var video_url = $("#video_url_"+id).val();
         var bg_video = $("#main_video_"+id).val();
@@ -119,7 +140,7 @@
 
 	$(".p-close-button").click(function(){
 		$("#p-cont-bg").css("display","none");
-		$(".videoPlay").removeClass("show");
+		$(".videoPlay-<?php echo $videos['videos_id']; ?>").removeClass("show");
 		$("body").removeClass("overflow");
 		
 	});
