@@ -35,7 +35,15 @@
 </div>
 
 <img src="<?php echo base_url($assets_dir); ?>img/one-logo.png" class="logo" alt="">
+<?php
 
+// var_dump($file_url);
+
+
+?>
+	<div class="videoWrapper">
+  <!-- <iframe width="560" height="315" src="https://iframe.mediadelivery.net/embed/18028/f279f7f1-3eb6-49ef-b689-e6e9e29dcd13?autoplay=false" frameborder="0" allowfullscreen></iframe> -->
+</div>
 <input type="hidden" id="video_url_<?php echo $videos['videos_id']; ?>" name="video_url" value="<?php echo base_url('watch/'.$videos['slug']).'.html';?>" />
 <input type="hidden" name="title" id="title_<?php echo $videos['videos_id']; ?>" value="<?php echo $videos['title']; ?>">
 <input type="hidden" name="release" id="release_<?php echo $videos['videos_id']; ?>" value="<?php echo $videos['release']; ?>">
@@ -48,13 +56,14 @@
 	<div id="p-cont">
 		<header class="op-down">
 			<div id="p-header">
-				<a class="p-close-button topRight"><i class="fa fa-xmark"></i></a>
+				<a class="p-close-button topRight"><i clasp-cont-bgs="fa fa-xmark">x</i></a>
 
-				<video src="https://irisheyestemp.xyz/video/home-bg-hq.mp4" id="vid-sample" loop="true" autoplay="autoplay" muted="" style="display: inline;">
+				<!--iframe <video src="https://irisheyestemp.xyz/video/home-bg-hq.mp4" id="vid-sample" loop="true" autoplay="autoplay" muted="" style="display: inline;">
 					<source src="https://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' />
 					<source src="https://vjs.zencdn.net/v/oceans.webm" type='video/webm' />
-				</video>
-
+				</video> -->
+				<iframe id="popupVid-<?php echo $videos['videos_id']; ?>" class="videoPlay-<?php echo $videos['videos_id']; ?>" width="800" height="500" src="<?php echo $file_url.'&mute=1'; ?>"></iframe>
+<br>
 				<div id="p-buttons">
 					<div id="carousel-vid-buttons">
 						<a href="<?php echo base_url('watch/'.$videos['slug']).'.html';?>"><p>Watch Now<i class="fas fa-play-circle" aria-hidden="true"></i></p></a>
@@ -125,24 +134,70 @@
 			<div id="p-description"><?php echo $videos['description'];?></div>
 		</main>
 	</div>
+
+		
 </div>
-                
+               
+
 
 <script type="text/javascript">
 	$(".slider-show-<?php echo $videos['videos_id']; ?>").click(function(){
+
+
 		$(".videoPlay-<?php echo $videos['videos_id']; ?>").toggleClass("show");
 		
-		var video_url = $("#video_url_"+id).val();
-        var bg_video = $("#main_video_"+id).val();
-		$("#bg_video").attr('src', bg_video);
+		var video_url = $("#video_url_<?php echo $videos['videos_id']; ?>").val();
+        var bg_video = $("#main_video_<?php echo $videos['videos_id']; ?>").val();
+		//$("#bg_video").attr('src', bg_video);
+		$(".slider-show-<?php echo $videos['videos_id']; ?>").attr('src', bg_video);
 		$("#p-cont-bg").css("display","block");
         $("#p-cont-bg").addClass("show");
+
+		
 	});
 
 	$(".p-close-button").click(function(){
+		$("#popupVid-<?php echo $videos['videos_id']; ?>").attr('src', '');
+
 		$("#p-cont-bg").css("display","none");
 		$(".videoPlay-<?php echo $videos['videos_id']; ?>").removeClass("show");
 		$("body").removeClass("overflow");
 		
+	
 	});
+
+
+	
+
+	//display("blob:https://iframe.mediadelivery.net/47f85c5c-da5d-4e8d-b102-23d2444579fa","vid-sample");
+
+	function display( videoFile, videoEl ) {
+
+// Preconditions:
+if( !( videoFile instanceof Blob ) ) throw new Error( '`videoFile` must be a Blob or File object.' ); // The `File` prototype extends the `Blob` prototype, so `instanceof Blob` works for both.
+if( !( videoEl instanceof HTMLVideoElement ) ) throw new Error( '`videoEl` must be a <video> element.' );
+
+// 
+
+const newObjectUrl = URL.createObjectURL( videoFile );
+	
+// URLs created by `URL.createObjectURL` always use the `blob:` URI scheme: https://w3c.github.io/FileAPI/#dfn-createObjectURL
+const oldObjectUrl = videoEl.currentSrc;
+if( oldObjectUrl && oldObjectUrl.startsWith('blob:') ) {
+	// It is very important to revoke the previous ObjectURL to prevent memory leaks. Un-set the `src` first.
+	// See https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
+
+	videoEl.src = ''; // <-- Un-set the src property *before* revoking the object URL.
+	URL.revokeObjectURL( oldObjectUrl );
+}
+
+// Then set the new URL:
+videoEl.src = newObjectUrl;
+
+// And load it:
+videoEl.load(); // https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/load
+
+}
+
+ 
 </script>
